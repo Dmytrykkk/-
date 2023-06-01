@@ -46,6 +46,8 @@ def try_request(url: str, auth) -> dict:
 
 def coolprint(data):
     results_list = data.get('results', [data])
+
+    print("\033[35m" + "*-" * 40 + "*" + "\033[0m")
     for dictionary in results_list:
         for key, value in dictionary.items():
             print(f"\033[1m\033[32m{key}\033[0m\t \033[33m==>\033[0m \t{value}")
@@ -116,7 +118,6 @@ if auth_cookie is not None:
     profile_data = try_request("https://ksu24.kspu.edu/api/v2/my/profile/", auth_cookie)
 
     if profile_data:
-        print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
         coolprint(profile_data)
         save_to_excel(pd.DataFrame([profile_data]), "profile.xlsx")
         save_to_json(profile_data, "profile.json")
@@ -127,7 +128,6 @@ if auth_cookie is not None:
     students_data = try_request("https://ksu24.kspu.edu/api/v2/my/students/", auth_cookie)
 
     if students_data:
-        print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
         coolprint(students_data)
         save_to_excel(pd.DataFrame(students_data["results"]), "students.xlsx")
         save_to_json(students_data, "students.json")
@@ -146,7 +146,6 @@ if auth_cookie is not None:
         auth_cookie)
 
     if recordbooks_data:
-        print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
         coolprint(recordbooks_data)
         save_to_excel(pd.DataFrame(recordbooks_data["results"]), "recordbooks.xlsx")
         save_to_json(recordbooks_data, "recordbooks.json")
@@ -167,7 +166,6 @@ if auth_cookie is not None:
     )
 
     if records_data:
-        print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
         coolprint(records_data)
         save_to_excel(pd.DataFrame(records_data["results"]), "records.xlsx")
         save_to_json(records_data, "records.json")
@@ -182,3 +180,5 @@ if auth_cookie is not None:
         plt.ylabel('Результат')
         plt.title('Оцінки за предметами')
         plt.show()
+
+
