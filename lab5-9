@@ -99,24 +99,6 @@ def save_to_csv(data, file_name):
         print(f"Помилка збереження в файл CSV: {e}")
 
 
-def calculate_semester_average(records_data):
-    if records_data:
-        grades = [record.get('grade') for record in records_data if 'grade' in record]
-        if grades:
-            semester_average = sum(grades) / len(grades)
-            return round(semester_average, 2)
-    return None
-
-
-def calculate_overall_average(records_data):
-    if records_data:
-        grades = [record.get('grade') for record in records_data if 'grade' in record]
-        if grades:
-            overall_average = sum(grades) / len(grades)
-            return round(overall_average, 2)
-    return None
-
-
 print(120 * "—")
 auth_cookie = authentication("dmytro.korshun@university.kherson.ua", "tXZ3hD5z2l")
 print(120 * "—")
