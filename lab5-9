@@ -1,5 +1,4 @@
 import requests
-import pprint
 import pandas as pd
 import pyshorteners
 import json
@@ -39,11 +38,18 @@ def try_request(url: str, auth) -> dict:
 
     if x.ok:
         data = x.json()
-        pprint.pprint(data)
         return data
     else:
         print(f"Помилка запиту. Код: {x.status_code}. Текст: {x.text}")
         return None
+
+
+def coolprint(data):
+    results_list = data.get('results', [data])
+    for dictionary in results_list:
+        for key, value in dictionary.items():
+            print(f"\033[1m\033[32m{key}\033[0m\t \033[33m==>\033[0m \t{value}")
+        print("\033[35m" + "*-" * 40 + "*" + "\033[0m")
 
 
 def get_value(url: str, auth, key: str) -> str:
@@ -99,23 +105,30 @@ def save_to_csv(data, file_name):
         print(f"Помилка збереження в файл CSV: {e}")
 
 
-print(120 * "—")
-auth_cookie = authentication("dmytro.korshun@university.kherson.ua", "tXZ3hD5z2l")
-print(120 * "—")
+print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
+
+MyLogin = str(input("Логін: "))
+MyPassword = str(input("Пароль:  "))
+
+auth_cookie = authentication(MyLogin, MyPassword)
 
 if auth_cookie is not None:
     profile_data = try_request("https://ksu24.kspu.edu/api/v2/my/profile/", auth_cookie)
+
     if profile_data:
-        print(11 * "_ . ", "_")
+        print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
+        coolprint(profile_data)
         save_to_excel(pd.DataFrame([profile_data]), "profile.xlsx")
         save_to_json(profile_data, "profile.json")
         save_to_csv(profile_data, "profile.csv")
         shorten_url("https://ksu24.kspu.edu/api/v2/my/profile/")
 
-    print(120 * "—")
+    print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
     students_data = try_request("https://ksu24.kspu.edu/api/v2/my/students/", auth_cookie)
+
     if students_data:
-        print(11 * "_ . ", "_")
+        print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
+        coolprint(students_data)
         save_to_excel(pd.DataFrame(students_data["results"]), "students.xlsx")
         save_to_json(students_data, "students.json")
         save_to_csv(students_data, "students.csv")
@@ -127,12 +140,14 @@ if auth_cookie is not None:
         "id"
     )
 
-    print(120 * "—")
+    print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
     recordbooks_data = try_request(
         "https://ksu24.kspu.edu/api/v2/my/students/"+str(student_id)+"/recordbooks/",
         auth_cookie)
+
     if recordbooks_data:
-        print(11 * "_ . ", "_")
+        print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
+        coolprint(recordbooks_data)
         save_to_excel(pd.DataFrame(recordbooks_data["results"]), "recordbooks.xlsx")
         save_to_json(recordbooks_data, "recordbooks.json")
         save_to_csv(recordbooks_data, "recordbooks.csv")
@@ -145,22 +160,25 @@ if auth_cookie is not None:
         "id"
     )
 
-    print(120 * "—")
+    print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
     records_data = try_request(
         "https://ksu24.kspu.edu/api/v2/my/students/" + str(student_id) + "/recordbooks/" + recordbook_id + "/records",
         auth_cookie
     )
+
     if records_data:
-        print(11 * "_ . ", "_")
+        print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
+        coolprint(records_data)
         save_to_excel(pd.DataFrame(records_data["results"]), "records.xlsx")
         save_to_json(records_data, "records.json")
         save_to_csv(records_data, "records.csv")
         shorten_url("https://ksu24.kspu.edu/api/v2/my/students/" + str(student_id) + "/recordbooks/" + recordbook_id + "/records")
-    print(120 * "—")
+    print("\033[1m\033[30m" + 120 * "—" + "\033[0m")
 
-    df = pd.DataFrame(records_data['results'], columns=['discipline_name', 'result'])
-    df.plot(x='discipline_name', y='result', kind='bar', figsize=(10, 6))
-    plt.xlabel('Назва предмету')
-    plt.ylabel('Результат')
-    plt.title('Оцінки за предметами')
-    plt.show()
+    if records_data:
+        df = pd.DataFrame(records_data['results'], columns=['discipline_name', 'result'])
+        df.plot(x='discipline_name', y='result', kind='bar', figsize=(10, 6))
+        plt.xlabel('Назва предмету')
+        plt.ylabel('Результат')
+        plt.title('Оцінки за предметами')
+        plt.show()
