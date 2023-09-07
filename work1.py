@@ -2,11 +2,10 @@ import random
 
 
 def fill_array(array_size):
-    array = []
     if array_size < 0:
         print("Розмір масиву не може бути від'ємним")
     else:
-        array.append(random.randint(1, 9))
+        array = [random.randint(1, 9)]
         for i in range(array_size - 1):
             element = random.randint(0, 9)
             array.append(element)
